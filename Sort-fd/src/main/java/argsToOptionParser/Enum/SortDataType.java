@@ -1,4 +1,4 @@
-package ArgsToOptionParser.Enum;
+package argsToOptionParser.Enum;
 
 public enum SortDataType {
 

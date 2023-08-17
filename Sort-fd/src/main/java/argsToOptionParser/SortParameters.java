@@ -1,7 +1,7 @@
-package ArgsToOptionParser;
+package argsToOptionParser;
 
-import ArgsToOptionParser.Enum.SortDataType;
-import ArgsToOptionParser.Enum.SortMode;
+import argsToOptionParser.Enum.SortDataType;
+import argsToOptionParser.Enum.SortMode;
 
 import java.util.List;
 

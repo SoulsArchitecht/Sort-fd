@@ -1,9 +1,11 @@
-package ArgsToOptionParser;
+package argsToOptionParser;
 
-import ArgsToOptionParser.Enum.OptionName;
-import ArgsToOptionParser.Enum.SortDataType;
-import ArgsToOptionParser.Enum.SortMode;
+import argsToOptionParser.Enum.OptionName;
+import argsToOptionParser.Enum.SortDataType;
+import argsToOptionParser.Enum.SortMode;
 import org.apache.commons.cli.*;
+
+import java.util.List;
 
 public class ArgsParserImpl implements ArgsParser {
 
@@ -17,11 +19,9 @@ public class ArgsParserImpl implements ArgsParser {
         options.addOption(OptionName.SORT_MODE_DESCEND.getOptionName(),
                 false, "Set descending mode for sort [Default: ASCENDING");
         options.addOption(OptionName.SORT_DATA_TYPE_STRING.getOptionName(),
-                true, "Set sort data type String");
+                false, "Set sort data type String");
         options.addOption(OptionName.SORT_DATA_TYPE_INTEGER.getOptionName(),
-                true,"Set sort data type Integer");
-        options.addOption(OptionName.OUTPUT_FILENAME.getOptionName(),
-                true, "Set output file name");
+                false,"Set sort data type Integer");
     }
 
     public static ArgsParser getInstance() {
@@ -41,7 +41,7 @@ public class ArgsParserImpl implements ArgsParser {
         if (parsedArgs.hasOption(OptionName.SORT_MODE_DESCEND.getOptionName())) {
             sortParameters.setSortMode(SortMode.DESCEND);
         } else {
-            sortParameters.setSortMode(SortMode.DESCEND);
+            sortParameters.setSortMode(SortMode.ASCEND);
         }
 
         if (parsedArgs.hasOption(OptionName.SORT_DATA_TYPE_STRING.getOptionName())) {
@@ -50,13 +50,8 @@ public class ArgsParserImpl implements ArgsParser {
             sortParameters.setSortDataType(SortDataType.INTEGER);
         }
 
-        if (parsedArgs.hasOption(OptionName.OUTPUT_FILENAME.getOptionName())) {
-            sortParameters.setOutputFileName(parsedArgs.getOptionValue(OptionName.OUTPUT_FILENAME.getOptionName()));
-        } else {
-            throw new IllegalArgumentException("Output file param required");
-        }
-
-        sortParameters.setInputFileNames(parsedArgs.getArgList());
+        sortParameters.setOutputFileName(parsedArgs.getArgList().get(0));
+        sortParameters.setInputFileNames(inputFileList(parsedArgs));
 
         return sortParameters;
     }
@@ -70,8 +65,8 @@ public class ArgsParserImpl implements ArgsParser {
                 (OptionName.SORT_DATA_TYPE_STRING.getOptionName())) {
             throw new IllegalArgumentException("Redefined or not specified sort data type option");
         }
-        if (parsedArgs.getArgs().length < 1) {
-            throw new IllegalArgumentException("No input files for sort data");
+        if (parsedArgs.getArgs().length < 2) {
+            throw new IllegalArgumentException("No output or input files for sort data");
         }
     }
 
@@ -81,6 +76,16 @@ public class ArgsParserImpl implements ArgsParser {
         CommandLine parsedArgs = commandLineParser.parse(options, args);
         validateParsedArgs(parsedArgs);
         return buildSortParameters(parsedArgs);
+    }
+
+    List<String> inputFileList(CommandLine parsedArgs) {
+        List<String> outputFilesList = parsedArgs.getArgList();
+        if (outputFilesList.size() > 2) {
+            outputFilesList.remove(0);
+        } else {
+            throw new IllegalArgumentException("No output or input files for sort data");
+        }
+        return outputFilesList;
     }
 
 }

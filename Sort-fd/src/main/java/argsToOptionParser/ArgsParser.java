@@ -1,4 +1,4 @@
-package ArgsToOptionParser;
+package argsToOptionParser;
 
 import org.apache.commons.cli.ParseException;
 
